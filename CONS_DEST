@@ -1,0 +1,74 @@
+import time
+
+class AntenaCelular:
+    def __init__(self, ubicacion, frecuencia):
+        """Inicializa la antena celular con ubicación y frecuencia"""
+        self.ubicacion = ubicacion
+        self.frecuencia = frecuencia
+        self.estado = "Activa"
+        print(f"Antena celular activa en {self.ubicacion} con frecuencia {self.frecuencia} MHz")
+    
+    def transmitir(self, datos):
+        """Simula la transmisión de datos desde la antena"""
+        if self.estado == "Activa":
+            print(f"Transmitiendo datos en {self.frecuencia} MHz: {datos}")
+            time.sleep(1)  # Simula el tiempo de transmisión
+            print("Datos transmitidos exitosamente.")
+        else:
+            print("La antena está inactiva. No se puede transmitir.")
+    
+    def recibir(self, dispositivo):
+        """Simula la recepción de datos desde un dispositivo móvil conectado"""
+        if self.estado == "Activa":
+            print(f"Antena {self.ubicacion} recibiendo datos de {dispositivo.nombre}")
+            time.sleep(1)  # Simula el tiempo de recepción
+            print(f"Datos recibidos de {dispositivo.nombre} exitosamente.")
+        else:
+            print("La antena está inactiva. No se puede recibir datos.")
+    
+    def __del__(self):
+        """Destructor que simula la desactivación de la antena y liberación de recursos"""
+        if self.estado == "Activa":
+            print(f"Desactivando antena en {self.ubicacion}. Frecuencia {self.frecuencia} MHz.")
+            self.estado = "Inactiva"
+        else:
+            print(f"La antena en {self.ubicacion} ya estaba inactiva.")
+    
+class DispositivoMovil:
+    def __init__(self, nombre, antena):
+        """Inicializa el dispositivo móvil y lo conecta a una antena celular"""
+        self.nombre = nombre
+        self.antena = antena  # El dispositivo móvil está asociado a una antena
+        print(f"Dispositivo móvil {self.nombre} conectado a antena en {self.antena.ubicacion}")
+    
+    def enviar_datos(self, datos):
+        """Simula el envío de datos desde el dispositivo móvil a la antena"""
+        print(f"{self.nombre} enviando datos a la antena en {self.antena.ubicacion}")
+        self.antena.transmitir(datos)
+    
+    def recibir_datos(self):
+        """Simula la recepción de datos por parte del dispositivo móvil desde la antena"""
+        print(f"{self.nombre} recibiendo datos desde la antena en {self.antena.ubicacion}")
+        self.antena.recibir(self)
+    
+    def __del__(self):
+        """Destructor que simula la desconexión del dispositivo móvil"""
+        print(f"Desconectando el dispositivo móvil {self.nombre} de la antena en {self.antena.ubicacion}")
+        del self.antena  # El dispositivo móvil pierde la referencia a la antena
+
+# Ejemplo de uso de las clases
+def main():
+    # Creamos una antena celular en una ubicación con una frecuencia determinada
+    antena1 = AntenaCelular("Zona A", 1800)
+    
+    # Creamos un dispositivo móvil y lo conectamos a la antena
+    movil1 = DispositivoMovil("Movil_X", antena1)
+    
+    # El móvil envía y recibe datos a través de la antena
+    movil1.enviar_datos("Llamada entrante")
+    movil1.recibir_datos()
+    
+    # Al finalizar, el destructor de los objetos se encargará de liberar los recursos.
+    
+if __name__ == "__main__":
+    main()
