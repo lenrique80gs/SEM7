@@ -1,0 +1,53 @@
+import time
+
+class ConexionRed:
+    def __init__(self, direccion_ip):
+        """El constructor inicializa la conexión de red a una dirección IP"""
+        self.direccion_ip = direccion_ip
+        self.estado_conexion = True
+        print(f"Conexión establecida a la dirección IP: {self.direccion_ip}")
+    
+    def enviar_datos(self, datos):
+        """Simula el envío de datos a través de la red"""
+        if self.estado_conexion:
+            print(f"Enviando datos a {self.direccion_ip}: {datos}")
+            time.sleep(1)  # Simula el tiempo de transmisión
+            print(f"Datos enviados exitosamente a {self.direccion_ip}.")
+        else:
+            print("Error: La conexión a la red está cerrada.")
+    
+    def __del__(self):
+        """El destructor cierra la conexión cuando el objeto es destruido"""
+        if self.estado_conexion:
+            print(f"Cerrando la conexión a la dirección IP: {self.direccion_ip}")
+            self.estado_conexion = False
+        else:
+            print(f"La conexión a {self.direccion_ip} ya estaba cerrada.")
+
+class Transmisor:
+    def __init__(self, nombre_dispositivo, direccion_ip):
+        """El constructor inicializa el transmisor con su propia conexión de red"""
+        self.nombre_dispositivo = nombre_dispositivo
+        self.conexion = ConexionRed(direccion_ip)  # El transmisor tiene una conexión a la red
+        print(f"Dispositivo {self.nombre_dispositivo} preparado para transmitir en {direccion_ip}")
+    
+    def transmitir(self, datos):
+        """El dispositivo transmite datos a través de la conexión de red"""
+        print(f"{self.nombre_dispositivo} está transmitiendo datos...")
+        self.conexion.enviar_datos(datos)
+    
+    def __del__(self):
+        """El destructor limpia los recursos relacionados con el transmisor"""
+        print(f"Eliminando el dispositivo {self.nombre_dispositivo} y cerrando su conexión.")
+        del self.conexion  # Se elimina la conexión a la red explícitamente
+
+# Ejemplo de uso de las clases
+def main():
+    # Creamos un objeto Transmisor que se conecta a una dirección IP específica
+    dispositivo1 = Transmisor("Router_A", "192.168.1.1")
+    dispositivo1.transmitir("Mensaje de prueba")
+    # Al finalizar el bloque de código, los objetos Transmisor y ConexionRed serán destruidos automáticamente
+
+if __name__ == "__main__":
+    main()
+
